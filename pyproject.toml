@@ -7,7 +7,12 @@ requires-python = ">=3.10"
 dependencies = [
     "dotenv>=0.9.9",
     "fastapi>=0.136.1",
-    "pydantic>=2.13.4",
+    "jwt>=1.4.0",
+    "pwdlib[argon2,bcrypt]>=0.3.0",
+    "pydantic[email]>=2.13.4",
+    "pydantic-settings>=2.14.1",
     "sqlalchemy>=2.0.49",
     "uvicorn>=0.47.0",
+    "aiosqlite>=0.22.1",
+    "python-jose>=3.5.0",
 ]
