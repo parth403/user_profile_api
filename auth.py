@@ -30,12 +30,21 @@ async def create_access_token(data:dict,expires_delta:timedelta | None=None):
     encoded_jwt=jwt.encode(to_encode,key=settings.SECRET_KEY,algorithm=settings.ALGORITHM)
     return encoded_jwt
 
-async def get_current_user(token:str,db=AsyncSession):
+async def get_current_active_user(token:str,db=AsyncSession):
     try:
-        payload=jwt.decode(token,key=settings.SECRET_KEY,algorithm=settings.ALGORITHM)
+        payload=jwt.decode(token,key=settings.SECRET_KEY,algorithms=settings.ALGORITHM)
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail='Invalid authentication token')
     user_id=payload.get('sub')
     user=await db.get(User,int(user_id))
+    if not user.is_active:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail='Inactive user')
     return user
         
+def check_admin(token):
+    try:
+        payload=jwt.decode(token,key=settings.SECRET_KEY,algorithms=settings.ALGORITHM)
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail='user is not admin')
+    is_admin=payload.get('is_admin')
+    return is_admin=='True'

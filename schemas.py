@@ -2,9 +2,9 @@ from pydantic import BaseModel,ConfigDict,Field,EmailStr,field_validator
 import re
 from typing import Literal
 
-class UserCreate(BaseModel):
+
+class UserBase(BaseModel):
     username:str=Field(min_length=1)
-    password:str=Field(min_length=8,max_length=64)
     email:EmailStr
 
     @field_validator('username')
@@ -13,6 +13,10 @@ class UserCreate(BaseModel):
         if not re.fullmatch(r"[a-zA-Z0-9]+",val):
             raise ValueError('Username can contains only alphabets and digits no special characters')
         return val
+
+    
+class UserCreate(UserBase):
+    password:str=Field(min_length=8,max_length=64)
 
     @field_validator('password')
     @classmethod
@@ -23,11 +27,10 @@ class UserCreate(BaseModel):
             raise ValueError('Password must contain uppercase letter')
         return val
 
-class UserCreateResponse(BaseModel):
+
+class UserCreateResponse(UserBase):
     model_config=ConfigDict(from_attributes=True)
     id:int
-    username:str
-    email:EmailStr
 
 class LoginResponse(BaseModel):
     username:str
@@ -36,3 +39,14 @@ class LoginResponse(BaseModel):
 class Token(BaseModel):
     token:str
     type:Literal['bearer']='bearer'
+
+class UserUpdate(UserBase):
+    pass
+
+class UserResponse(UserBase):
+    model_config=ConfigDict(from_attributes=True)
+    id:int
+
+class AdminUserResponse(UserResponse):
+    is_admin:bool
+    is_active:bool
