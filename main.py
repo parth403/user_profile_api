@@ -31,8 +31,16 @@ async def create_user(userCreate:UserCreate,db:AsyncSession=Depends(get_session)
         raise e
     return user
 
+# @app.get('/all-users',response_model=list[AdminUserResponse])
+# async def get_all_users(token:Annotated[str,Depends(oauth2_scheme)],db:AsyncSession=Depends(get_session)):
+#     # if not check_admin(token):
+#     #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+#     q=select(User)
+#     user=await db.scalars(q)
+#     return user.all()
+
 @app.get('/all-users',response_model=list[AdminUserResponse])
-async def get_all_users(token:Annotated[str,Depends(oauth2_scheme)],db:AsyncSession=Depends(get_session)):
+async def get_all_users(db:AsyncSession=Depends(get_session)):
     # if not check_admin(token):
     #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
     q=select(User)
