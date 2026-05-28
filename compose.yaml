@@ -1,4 +1,10 @@
 services:
+  app:
+    build: .
+    image: parth0841/my-app1
+    ports: 
+      - "8000:8000"
+      
   db:
     image: postgres:18
     container_name: postgres-dev
