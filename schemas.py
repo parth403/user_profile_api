@@ -16,7 +16,7 @@ class UserBase(BaseModel):
 
     
 class UserCreate(UserBase):
-    password:str=Field(min_length=8,max_length=64)
+    password:str=Field(min_length=8,max_length=500)
 
     @field_validator('password')
     @classmethod
